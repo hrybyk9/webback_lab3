@@ -1,0 +1,43 @@
+[
+    {
+        "status": "shipped",
+        "isPaid": true,
+        "paymentMethod": "card",
+        "shippingAddress": {
+            "city": "Lviv",
+            "street": "Drahomanova 50",
+            "postalCode": "79005"
+        },
+        "items": [
+            {
+                "name": "MacBook Pro 16\"",
+                "price": 2500.00,
+                "quantity": 1
+            }
+        ],
+        "comment": "Please call me back"
+    },
+    {
+        "status": "processing",
+        "isPaid": false,
+        "paymentMethod": "cash",
+        "shippingAddress": {
+            "city": "Kyiv",
+            "street": "Bankova 10",
+            "postalCode": "01024"
+        },
+        "items": [
+            {
+                "name": "USB Type-C cable",
+                "price": 5.00,
+                "quantity": 2
+            },
+            {
+                "name": "Power Bank",
+                "price": 25.00,
+                "quantity": 1
+            }
+        ],
+        "comment": null
+    }
+]
