@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/hrybyk9/webback_lab3/issues"
   },
-  "homepage": "https://github.com/hrybyk9/webback_lab3#readme"
+  "homepage": "https://github.com/hrybyk9/webback_lab3#readme",
+  "dependencies": {
+    "commander": "^15.0.0"
+  }
 }
