@@ -171,4 +171,82 @@ program
     }
   });
 
+
+
+const SORT_FIELDS = ['name', 'price', 'quantity', 'sum'];
+
+program
+  .command('items')
+  .description('показати позиції замовлення із сумою за кожну')
+  .argument('<number>', 'номер замовлення (починаючи з 1)')
+  .option('-s, --sort <by>', 'сортувати за полем: name, price, quantity або sum')
+  .option('-d, --desc', 'сортувати за спаданням (потребує --sort)')
+  .action((number, options) => {
+    const orders = loadOrders();
+    const order = getOrder(orders, number);
+
+    if (options.desc && options.sort === undefined) {
+      program.error('Помилка: прапорець --desc можна використовувати лише разом з --sort.');
+    }
+
+    
+    const rows = (order.items ?? []).map((item) => ({
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      sum: Math.round(item.price * item.quantity * 100) / 100,
+    }));
+
+    if (options.sort !== undefined) {
+      if (!SORT_FIELDS.includes(options.sort)) {
+        program.error(
+          `Помилка: невідоме поле сортування "${options.sort}". Допустимо: ${SORT_FIELDS.join(', ')}.`
+        );
+      }
+
+      rows.sort((a, b) => {
+        if (options.sort === 'name') {
+          return a.name.localeCompare(b.name, 'uk');
+        }
+        return a[options.sort] - b[options.sort];
+      });
+
+      if (options.desc) {
+        rows.reverse();
+      }
+    }
+
+    rows.forEach((row, i) => {
+      console.log(
+        `${i + 1}. ${row.name} — ${row.price.toFixed(2)} $ × ${row.quantity} = ${row.sum.toFixed(2)} $`
+      );
+    });
+  });
+
+program
+  .command('total')
+  .description('показати загальну суму замовлення')
+  .argument('<number>', 'номер замовлення (починаючи з 1)')
+  .action((number) => {
+    const orders = loadOrders();
+    const order = getOrder(orders, number);
+    console.log(`Загальна сума замовлення №${number}: ${orderTotal(order).toFixed(2)} $`);
+  });
+
+program
+  .command('summary')
+  .description('показати зведення про доставку й оплату замовлення')
+  .argument('<number>', 'номер замовлення (починаючи з 1)')
+  .action((number) => {
+    const orders = loadOrders();
+    const order = getOrder(orders, number);
+    const address = order.shippingAddress;
+
+    console.log(`Замовлення №${number}`);
+    console.log(`Статус: ${order.status}`);
+    console.log(`Адреса доставки: ${address.city}, ${address.street}, ${address.postalCode}`);
+    console.log(`Спосіб оплати: ${order.paymentMethod}`);
+    console.log(`Оплата: ${order.isPaid ? 'оплачено' : 'не оплачено'}`);
+  });
+
 program.parse();
